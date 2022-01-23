@@ -28,7 +28,7 @@ RUN chmod 777 /var/run/docker.sock
 
 #changes the ownership of /var/run/docker.sock
 RUN chown root:docker /var/run/docker.sock
-# RUN chown -R uavcast /home/uavcast
+# RUN chown -R uavcast /app/uavcast
 
 RUN newgrp docker
 

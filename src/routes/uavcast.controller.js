@@ -8,7 +8,7 @@ class UavcastController {
     echo "Deleting previous version\n" && docker rm uavcast && \ 
     echo "Starting ${version} uavcast container...\n" && docker run \
     --restart unless-stopped --name uavcast -d \
-    -v uavdata:/home/uavcast/persistent \
+    -v uavdata:/app/uavcast/data \
     -v /var/lib/zerotier-one:/var/lib/zerotier-one \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v /dev:/dev \
