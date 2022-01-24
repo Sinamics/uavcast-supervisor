@@ -22,6 +22,8 @@ RUN apt-get -y install apt-transport-https \
        stable" && \
        apt-get update && \
        apt-get -y install docker-ce
+# RUN curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh
+# RUN systemctl enable docker
 
 RUN touch /var/run/docker.sock
 RUN chmod 777 /var/run/docker.sock
