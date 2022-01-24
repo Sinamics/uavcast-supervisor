@@ -10,7 +10,7 @@ class SupervisorController {
     const supervisorInstallUrl = `
     echo "docker stop supervisor && docker rm supervisor &&
     docker run --restart unless-stopped --name supervisor \
-    --net=host -d -v /var/run/docker.sock:/var/run/docker.sock \
+    --net=host -d --privileged -v /var/run/docker.sock:/var/run/docker.sock \
     -v /home/uavcast/uavpipe:/home/uavpipe \
     sinamics/uavcast-supervisor:${version}
     " > /home/uavpipe
