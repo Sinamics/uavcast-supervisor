@@ -1,5 +1,7 @@
-# This stage installs our modules
-FROM node:buster-slim
+FROM --platform=$TARGETPLATFORM node:buster-slim
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+
 WORKDIR /app
 
 RUN useradd -ms /bin/bash uavcast
@@ -9,21 +11,10 @@ RUN echo "uavcast:uavcast" | chpasswd
 # If you have native dependencies, you'll need extra tools
 # RUN apk add --no-cache make gcc g++ python3
 RUN apt-get update && apt-get install -y curl sudo
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends apt-utils
 #install docker
-RUN apt-get -y install apt-transport-https \
-       ca-certificates \
-       curl \
-       gnupg2 \
-       software-properties-common && \
-       curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg > /tmp/dkey; apt-key add /tmp/dkey && \
-       add-apt-repository \
-       "deb [arch=armhf] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
-       $(lsb_release -cs) \
-       stable" && \
-       apt-get update && \
-       apt-get -y install docker-ce
-# RUN curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh
-# RUN systemctl enable docker
+RUN curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh
+RUN systemctl enable docker
 
 RUN touch /var/run/docker.sock
 RUN chmod 777 /var/run/docker.sock
