@@ -13,19 +13,18 @@ RUN echo "uavcast:uavcast" | chpasswd
 # RUN apk add --no-cache make gcc g++ python3
 RUN apt-get update && apt-get install -y curl sudo
 #install docker
-RUN apt-get -y install apt-transport-https \
-       ca-certificates \
-       curl \
-       gnupg2 \
-       software-properties-common && \
-       curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg > /tmp/dkey; apt-key add /tmp/dkey
+RUN apt-get install \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
 
-RUN add-apt-repository \
-       "deb [arch=${TARGETARCH}] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
-       $(lsb_release -cs) \
-       stable" && \
-       apt-get update && \
-       apt-get -y install docker-ce
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+RUN echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+RUN apt-get update && apt-get install docker-ce docker-ce-cli containerd.io
 
 RUN touch /var/run/docker.sock
 RUN chmod 777 /var/run/docker.sock
