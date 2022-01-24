@@ -13,7 +13,7 @@ RUN echo "uavcast:uavcast" | chpasswd
 # RUN apk add --no-cache make gcc g++ python3
 RUN apt-get update && apt-get install -y curl sudo
 #install docker
-RUN apt-get install \
+RUN apt-get install -y \
     ca-certificates \
     curl \
     gnupg \
