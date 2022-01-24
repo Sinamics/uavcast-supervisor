@@ -1,5 +1,5 @@
 # This stage installs our modules
-FROM arm32v7/node:buster-slim
+FROM node:buster-slim
 WORKDIR /app
 
 RUN useradd -ms /bin/bash uavcast
