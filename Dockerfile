@@ -1,6 +1,7 @@
-FROM --platform=$TARGETPLATFORM node:buster-slim
+FROM --platform=$TARGETPLATFORM node:14.18.3-bullseye-slim
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
+ARG TARGETARCH
 
 WORKDIR /app
 
@@ -11,10 +12,20 @@ RUN echo "uavcast:uavcast" | chpasswd
 # If you have native dependencies, you'll need extra tools
 # RUN apk add --no-cache make gcc g++ python3
 RUN apt-get update && apt-get install -y curl sudo
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends apt-utils
 #install docker
-RUN curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh
-RUN systemctl enable docker
+RUN apt-get -y install apt-transport-https \
+       ca-certificates \
+       curl \
+       gnupg2 \
+       software-properties-common && \
+       curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg > /tmp/dkey; apt-key add /tmp/dkey
+
+RUN add-apt-repository \
+       "deb [arch=${TARGETARCH}] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
+       $(lsb_release -cs) \
+       stable" && \
+       apt-get update && \
+       apt-get -y install docker-ce
 
 RUN touch /var/run/docker.sock
 RUN chmod 777 /var/run/docker.sock
@@ -24,21 +35,10 @@ RUN chown root:docker /var/run/docker.sock
 # RUN chown -R uavcast /app/uavcast
 
 RUN newgrp docker
+COPY . .
 
-COPY package.json package-lock.json ./
 RUN npm install
 
-# # Then we copy over the modules from above onto a `slim` image
-# FROM mhart/alpine-node:slim-12
-
-# # If possible, run your container using `docker run --init`
-# # Otherwise, you can use `tini`:
-# # RUN apk add --no-cache tini
-# # ENTRYPOINT ["/sbin/tini", "--"]
-
-WORKDIR /app
-
-COPY . .
 CMD ["node", "src/index.js"]
 
 #build 

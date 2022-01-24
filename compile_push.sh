@@ -10,8 +10,8 @@ docker buildx use uavcast_builder
 docker run --privileged --rm tonistiigi/binfmt --install all
 
 docker buildx build --pull --rm -f "Dockerfile" \
---platform linux/arm/v7,linux/arm64,linux/amd64 \
--t sinamics/uavcast-supervisor:$1 "." --output "type=docker,name=sinamics/uavcast:test"
+--platform linux/arm,linux/arm64,linux/amd64 \
+-t sinamics/uavcast-supervisor:$1 "." --push
 
 # docker build -t sinamics/uavcast-supervisor:$1 .
 # docker push sinamics/uavcast-supervisor:$1
